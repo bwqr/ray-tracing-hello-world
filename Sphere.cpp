@@ -26,13 +26,13 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
     float tPlus = (-localDot + delta) / dirDot;
     float tMinus = (-localDot - delta) / dirDot;
 
-    record->t = ray.move(tMinus).z >= tMin ? tMinus : tPlus;
+    record->t = tMinus >= tMin ? tMinus : tPlus;
 
-    record->hitPoint = ray.move(record->t);
-
-    if(record->hitPoint.z > tMax) {
+    if(record->t > tMax || record->t < tMin) {
         return false;
     }
+
+    record->hitPoint = ray.move(record->t);
 
     record->normal = record->hitPoint - center;
 
@@ -48,7 +48,7 @@ vec3 Sphere::shade(const IntersectionRecord &record, const vec3 &lightSource,
     IntersectionRecord tmpRecord = {};
 
     for (const auto &surface: surfaces) {
-        if (surface.get() != this && surface->intersect(&tmpRecord, lightRay, NEAR_VIEW, FAR_VIEW)) {
+        if (surface.get() != this && surface->intersect(&tmpRecord, lightRay, 0, lightRay.findT(lightSource.z))) {
             shadowed = true;
             break;
         }

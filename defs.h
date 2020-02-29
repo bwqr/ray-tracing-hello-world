@@ -4,10 +4,10 @@
 
 #define IMAGE_WIDTH 50
 #define IMAGE_HEIGHT 50
-#define IMAGE_RES_X 360
-#define IMAGE_RES_Y 360
+#define IMAGE_RES_X 100
+#define IMAGE_RES_Y 100
 #define FAR_VIEW 1000
-#define NEAR_VIEW 100
+#define NEAR_VIEW 200
 #define AMBIENT_LIGHT .1
 
 #endif //RENDER_HELLO_WORLD_DEFS_H

@@ -34,7 +34,7 @@ public:
 
 private:
     ViewPlane viewPlane;
-    vec3 position = {0, 0, 0};
+    vec3 position = {0, 0, 50};
 };
 
 

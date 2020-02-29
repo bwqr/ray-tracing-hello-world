@@ -17,11 +17,11 @@ int main() {
 
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 75, 250}, {.9, .4, .4}, 10)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 40, 250}, {.4, .9, .4}, 18)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({20, 40, 280}, {.9, .4, .4}, 10)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 250}, {.4, .9, .4}, 20)));
     surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1000, 400}, { .1, .1, .9}, 1000)));
 
-    vec3 light = {0, 50, 0};
+    vec3 light = {-50, 0, 0};
 
     Camera camera;
 
@@ -54,7 +54,7 @@ int main() {
             float tBest = FAR_VIEW;
 
             for (const auto &surface: surfaces) {
-                if (surface->intersect(&record, ray, NEAR_VIEW, tBest)) {
+                if (surface->intersect(&record, ray, ray.findT(NEAR_VIEW), tBest)) {
                     tBest = record.t;
                     auto rgb = surface->shade(record, light, surfaces);
                     image[i][k] = 255.99 * rgb.x;

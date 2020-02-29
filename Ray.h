@@ -19,6 +19,10 @@ public:
     vec3 move(float t) const {
         return point + direction * t;
     }
+
+    float findT(float z) const {
+        return (z - point.z) / direction.z;
+    }
 };
 
 
