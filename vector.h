@@ -50,6 +50,9 @@ struct vec3 {
         return {x - other.x, y - other.y, z - other.z};
     }
 
+    inline vec3 operator-() const {
+        return {-x, -y, -z};
+    }
 
     vec3(const vec2 &other) {
         x = other.x;
@@ -57,7 +60,7 @@ struct vec3 {
         z = 0;
     }
 
-    vec3& operator=(const vec2 &other) {
+    vec3 &operator=(const vec2 &other) {
         x = other.x;
         y = other.y;
         z = 0;

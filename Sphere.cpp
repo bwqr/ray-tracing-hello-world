@@ -36,6 +36,12 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
 
     record->normal = record->hitPoint - center;
 
+    float cos = ray.direction.dot(record->normal) / (record->normal.length() * ray.direction.length());
+
+    if(cos > 0) {
+        record->normal = - record->normal;
+    }
+
     return true;
 }
 

@@ -18,7 +18,7 @@ int main() {
     vector<unique_ptr<Surface>> surfaces;
 
     surfaces.push_back(unique_ptr<Surface>(new Sphere({20, 40, 280}, {.9, .4, .4}, 10)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 250}, {.4, .9, .4}, 20)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 215}, {.4, .9, .4}, 20)));
     surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1000, 400}, { .1, .1, .9}, 1000)));
 
     vec3 light = {-50, 0, 0};
