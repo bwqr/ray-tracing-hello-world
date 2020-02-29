@@ -13,19 +13,16 @@ using namespace std;
 int main() {
 
     ofstream stream("output/output.ppm");
-//    auto &stream = cout;
 
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({20, 40, 280}, {.9, .4, .4}, 10)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 215}, {.4, .9, .4}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1000, 400}, { .1, .1, .9}, 1000)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 300}, {.9, .4, .4}, 20)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({100, 100, 600}, {.4, .9, .4}, 60)));
+//    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1000, 400}, { .1, .1, .9}, 1000)));
 
-    vec3 light = {-50, 0, 0};
+    vec3 light = {500, 500, 500};
 
     Camera camera;
-
-    stream << "P3\n" << IMAGE_RES_X << " " << IMAGE_RES_Y << "\n255\n";
 
     int **image = new int *[IMAGE_RES_X];
 
@@ -33,14 +30,18 @@ int main() {
         image[i] = new int[IMAGE_RES_Y * 3];
     }
 
-    float pixelPerUnitX = IMAGE_RES_X / IMAGE_WIDTH / 2;
-    float pixelPerUnitY = IMAGE_RES_Y / IMAGE_HEIGHT / 2;
+    float pixelPerUnitX = IMAGE_RES_X / 2. / IMAGE_WIDTH;
+    float pixelPerUnitY = IMAGE_RES_Y / 2. / IMAGE_HEIGHT;
+
+    stream << "P3\n" << IMAGE_RES_X << " " << IMAGE_RES_Y << "\n255\n";
 
     for (int i = 0; i < IMAGE_RES_Y; i++) {
         float normY = IMAGE_HEIGHT - (i + 0.5) / pixelPerUnitY;
 
         for (int j = 0; j < IMAGE_RES_X; j++) {
+
             float normX = (j + 0.5) / pixelPerUnitX - IMAGE_WIDTH;
+
             int k = j * 3;
 
             image[i][k] = 0;
