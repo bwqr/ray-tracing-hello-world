@@ -16,7 +16,7 @@ public:
         direction = _direction;
     }
 
-    vec3 move(float t) {
+    vec3 move(float t) const {
         return point + direction * t;
     }
 };

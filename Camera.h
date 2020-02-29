@@ -26,11 +26,6 @@ struct ViewPlane {
 
 class Camera {
 public:
-
-    Camera(float distToViewPlane) {
-        position.z = viewPlane.center.z - distToViewPlane;
-    }
-
     Ray generateRay(const vec2 &pointInViewPanel) {
         vec3 pointInWorldSpace = {pointInViewPanel.x, pointInViewPanel.y, viewPlane.center.z};
         vec3 direction = (pointInWorldSpace - position);
