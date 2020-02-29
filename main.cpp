@@ -12,61 +12,57 @@ using namespace std;
 
 int main() {
 
-    ofstream stream("output/output.ppm");
+    int size = IMAGE_RES_Y * IMAGE_RES_X * 11 + 200;
+
+    string output;
+    output.reserve(size);
+
+    ofstream stream("output/output.ppm", ios::binary | ios::trunc);
 
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 300}, {.9, .4, .4}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({100, 100, 600}, {.4, .9, .4}, 60)));
-//    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1000, 400}, { .1, .1, .9}, 1000)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 250}, {.9, .4, .4}, 20)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({75, 100, 250}, {.4, .9, .4}, 40)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1100, 500}, { .1, .1, .9}, 1050)));
 
-    vec3 light = {500, 500, 500};
+    vec3 light = {0, 500, 0};
 
     Camera camera;
 
-    int **image = new int *[IMAGE_RES_X];
-
-    for (int i = 0; i < IMAGE_RES_X; i++) {
-        image[i] = new int[IMAGE_RES_Y * 3];
-    }
-
-    float pixelPerUnitX = IMAGE_RES_X / 2. / IMAGE_WIDTH;
-    float pixelPerUnitY = IMAGE_RES_Y / 2. / IMAGE_HEIGHT;
-
-    stream << "P3\n" << IMAGE_RES_X << " " << IMAGE_RES_Y << "\n255\n";
+    output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n255\n";
 
     for (int i = 0; i < IMAGE_RES_Y; i++) {
-        float normY = IMAGE_HEIGHT - (i + 0.5) / pixelPerUnitY;
+        float normY = (i + 0.5) / IMAGE_RES_Y;
 
         for (int j = 0; j < IMAGE_RES_X; j++) {
 
-            float normX = (j + 0.5) / pixelPerUnitX - IMAGE_WIDTH;
+            float normX = (j + 0.5) / IMAGE_RES_X;
 
-            int k = j * 3;
-
-            image[i][k] = 0;
-            image[i][k + 1] = 0;
-            image[i][k + 2] = 0;
+            int color[3] = {0, 0, 0};
 
             auto ray = camera.generateRay({normX, normY});
 
             IntersectionRecord record = {};
 
-            float tBest = FAR_VIEW;
+            float tBest = ray.findT(FAR_VIEW);
 
             for (const auto &surface: surfaces) {
                 if (surface->intersect(&record, ray, ray.findT(NEAR_VIEW), tBest)) {
                     tBest = record.t;
                     auto rgb = surface->shade(record, light, surfaces);
-                    image[i][k] = 255.99 * rgb.x;
-                    image[i][k + 1] = 255.99 * rgb.y;
-                    image[i][k + 2] = 255.99 * rgb.z;
+                    color[0] = 255.99 * rgb.x;
+                    color[1] = 255.99 * rgb.y;
+                    color[2] = 255.99 * rgb.z;
                 }
             }
 
-            stream << image[i][k] << " " << image[i][k + 1] << " " << image[i][k + 2] << endl;
+            output += to_string(color[0]) + " " + to_string(color[1]) + " " + to_string(color[2]) + "\n";
         }
     }
+
+    stream.write(output.c_str(), output.size());
+
+    stream.close();
 
     return 0;
 }

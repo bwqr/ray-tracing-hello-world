@@ -27,14 +27,23 @@ struct ViewPlane {
 class Camera {
 public:
     Ray generateRay(const vec2 &pointInViewPanel) {
-        vec3 pointInWorldSpace = {pointInViewPanel.x, pointInViewPanel.y, viewPlane.center.z};
+        static float imageWidth = IMAGE_WIDTH * 2.;
+        static float imageHeight = IMAGE_HEIGHT * 2.;
+
+        vec3 pointInWorldSpace = {
+                pointInViewPanel.x * imageWidth - IMAGE_WIDTH,
+                IMAGE_HEIGHT - pointInViewPanel.y * imageHeight,
+                viewPlane.center.z
+        };
+
         vec3 direction = (pointInWorldSpace - position);
+
         return {pointInWorldSpace, direction};
     }
 
 private:
     ViewPlane viewPlane;
-    vec3 position = {0, 0, 50};
+    vec3 position = {0, 0, 0};
 };
 
 
