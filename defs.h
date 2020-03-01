@@ -9,5 +9,6 @@
 #define FAR_VIEW 1000
 #define NEAR_VIEW 200
 #define AMBIENT_LIGHT .1
+#define COLOR_MAX 255.99
 
 #endif //RENDER_HELLO_WORLD_DEFS_H

@@ -5,7 +5,7 @@
 Sphere::Sphere(vec3 _center, vec3 _color, float _radius) {
     center = _center;
     radius = _radius;
-    color = _color;
+    color = _color / COLOR_MAX;
 }
 
 bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) {
@@ -28,7 +28,7 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
 
     record->t = tMinus >= tMin ? tMinus : tPlus;
 
-    if(record->t > tMax || record->t < tMin) {
+    if (record->t > tMax || record->t < tMin) {
         return false;
     }
 
@@ -38,8 +38,8 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
 
     float cos = ray.direction.dot(record->normal) / (record->normal.length() * ray.direction.length());
 
-    if(cos > 0) {
-        record->normal = - record->normal;
+    if (cos > 0) {
+        record->normal = -record->normal;
     }
 
     return true;

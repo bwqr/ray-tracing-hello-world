@@ -21,15 +21,16 @@ int main() {
 
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 250}, {.9, .4, .4}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({75, 100, 250}, {.4, .9, .4}, 40)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1100, 500}, { .1, .1, .9}, 1050)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 250}, {255, 0, 10}, 20)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({75, 100, 250}, {10, 255, 10}, 40)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1100, 500}, {0, 0, 255}, 1050)));
 
     vec3 light = {0, 500, 0};
 
     Camera camera;
 
-    output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n255\n";
+    output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n" +
+              to_string(static_cast<int>(COLOR_MAX)) + "\n";
 
     for (int i = 0; i < IMAGE_RES_Y; i++) {
         float normY = (i + 0.5) / IMAGE_RES_Y;
@@ -50,9 +51,9 @@ int main() {
                 if (surface->intersect(&record, ray, ray.findT(NEAR_VIEW), tBest)) {
                     tBest = record.t;
                     auto rgb = surface->shade(record, light, surfaces);
-                    color[0] = 255.99 * rgb.x;
-                    color[1] = 255.99 * rgb.y;
-                    color[2] = 255.99 * rgb.z;
+                    color[0] = COLOR_MAX * rgb.x;
+                    color[1] = COLOR_MAX * rgb.y;
+                    color[2] = COLOR_MAX * rgb.z;
                 }
             }
 
