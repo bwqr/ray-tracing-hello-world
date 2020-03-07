@@ -12,7 +12,7 @@ public:
 
     bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) override;
 
-    vec3 shade(const IntersectionRecord &record, const Ray &look, const std::vector<vec3> &lightSources,
+    vec3 shade(const IntersectionRecord &record, const std::vector<vec3> &lightSources,
                const std::vector<std::unique_ptr<Surface>> &surfaces) override;
 
 private:

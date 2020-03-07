@@ -35,6 +35,8 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
 
     record->normal = record->hitPoint - center;
 
+    record->look = ray.direction;
+
     //Check if ray passes through sphere
     float cos = ray.direction.dot(record->normal) / (record->normal.length() * ray.direction.length());
     if (cos > 0) {
@@ -44,7 +46,7 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
     return true;
 }
 
-vec3 Sphere::shade(const IntersectionRecord &record, const Ray &look, const std::vector<vec3> &lightSources,
+vec3 Sphere::shade(const IntersectionRecord &record, const std::vector<vec3> &lightSources,
                    const std::vector<std::unique_ptr<Surface>> &surfaces) {
     auto &lightSource = lightSources[0];
     Ray lightRay = {record.hitPoint, lightSource - record.hitPoint};
@@ -62,7 +64,7 @@ vec3 Sphere::shade(const IntersectionRecord &record, const Ray &look, const std:
 
     auto cosTheta = lightRay.direction.cos(record.normal);
 
-    auto bisect = lightRay.direction.bisect(- look.direction);
+    auto bisect = lightRay.direction.bisect(- record.look);
 
     auto cosAlpha = record.normal.cos(bisect);
 

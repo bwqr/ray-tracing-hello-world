@@ -8,6 +8,7 @@ struct IntersectionRecord {
     float t;
     vec3 hitPoint;
     vec3 normal;
+    vec3 look;
 };
 
 #endif //RENDER_HELLO_WORLD_INTERSECTIONRECORD_H

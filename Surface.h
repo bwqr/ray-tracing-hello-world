@@ -10,7 +10,7 @@
 class Surface {
 public:
     virtual bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) = 0;
-    virtual vec3 shade(const IntersectionRecord &record, const Ray &look, const std::vector<vec3> &lightSource,
+    virtual vec3 shade(const IntersectionRecord &record, const std::vector<vec3> &lightSource,
                        const std::vector<std::unique_ptr<Surface>> &surfaces) = 0;
 };
 
