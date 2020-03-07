@@ -26,6 +26,14 @@ struct vec3 {
         return *this / length();
     }
 
+    inline vec3 bisect(const vec3 &other) const {
+        return *this * other.length() + other * length();
+    }
+
+    inline float cos(const vec3 &other) const {
+        return dot(other) / (other.length() * length());
+    }
+
     inline float length() const {
         return std::sqrt(dot(*this));
     }

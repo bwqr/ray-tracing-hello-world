@@ -12,7 +12,7 @@ using namespace std;
 
 int main() {
 
-    int size = IMAGE_RES_Y * IMAGE_RES_X * 11 + 200;
+    int size = IMAGE_RES_Y * IMAGE_RES_X * 12 + 200;
 
     string output;
     output.reserve(size);
@@ -21,11 +21,12 @@ int main() {
 
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 50, 250}, {255, 0, 10}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({75, 100, 250}, {10, 255, 10}, 40)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 210}, {255, 0, 10}, 20)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 70, 250}, {10, 255, 10}, 40)));
     surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1100, 500}, {0, 0, 255}, 1050)));
+    surfaces.push_back(unique_ptr<Surface>(new Sphere({-50, 0, 250}, {60, 60, 60}, 20)));
 
-    vec3 light = {0, 500, 0};
+    vec3 light = {-50, 250, 250};
 
     Camera camera;
 
@@ -50,7 +51,7 @@ int main() {
             for (const auto &surface: surfaces) {
                 if (surface->intersect(&record, ray, ray.findT(NEAR_VIEW), tBest)) {
                     tBest = record.t;
-                    auto rgb = surface->shade(record, light, surfaces);
+                    auto rgb = surface->shade(record, ray, {light}, surfaces);
                     color[0] = COLOR_MAX * rgb.x;
                     color[1] = COLOR_MAX * rgb.y;
                     color[2] = COLOR_MAX * rgb.z;
