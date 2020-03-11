@@ -15,8 +15,8 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
     auto dirDot = ray.direction.dot(ray.direction); // (d.d)
     auto localDot = ray.direction.dot(localPoint); // (d.p)
 
-    float delta = std::pow(localDot, 2) -
-                  dirDot * (localPoint.dot(localPoint) - std::pow(radius, 2)); // ((d.p)^2 - (d.d)((p.p) - R^2))
+    float delta = localDot * localDot -
+                  dirDot * (localPoint.dot(localPoint) - radius * radius); // ((d.p)^2 - (d.d)((p.p) - R^2))
 
     //Check if any solutions exist
     if (delta < 0) {
