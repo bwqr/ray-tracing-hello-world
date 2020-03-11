@@ -5,25 +5,6 @@
 #include "vector.h"
 #include "defs.h"
 
-struct ViewPlane {
-    vec3 vertices[4] = {{-IMAGE_WIDTH, -IMAGE_HEIGHT, 100},
-                        {-IMAGE_WIDTH, IMAGE_HEIGHT,  100},
-                        {IMAGE_WIDTH,  IMAGE_HEIGHT,  100},
-                        {IMAGE_WIDTH,  -IMAGE_HEIGHT, 100}};
-
-    vec3 center;
-
-    explicit ViewPlane() {
-        center = {0, 0, 0};
-
-        for (const auto vertex : vertices) {
-            center = center + vertex;
-        }
-
-        center = center / 4.0;
-    }
-};
-
 class Camera {
 public:
     Ray generateRay(const vec2 &pointInViewPanel) {
@@ -33,7 +14,7 @@ public:
         vec3 pointInWorldSpace = {
                 pointInViewPanel.x * imageWidth - IMAGE_WIDTH,
                 IMAGE_HEIGHT - pointInViewPanel.y * imageHeight,
-                viewPlane.center.z
+                100
         };
 
         vec3 direction = (pointInWorldSpace - position);
@@ -42,7 +23,6 @@ public:
     }
 
 private:
-    ViewPlane viewPlane;
     vec3 position = {0, 0, 0};
 };
 

@@ -10,26 +10,50 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char **argv) {
+
+    if(argc < 2) {
+        cout << "input file is not given" << endl;
+
+        return -1;
+    }
+
+    ofstream stream("output.ppm", ios::binary | ios::trunc);
+
+    if(!stream.is_open()) {
+        cout << "output file could not be open" << endl;
+
+        return -1;
+    }
 
     int size = IMAGE_RES_Y * IMAGE_RES_X * 12 + 200;
 
     string output;
     output.reserve(size);
 
-    ofstream stream("output/output.ppm", ios::binary | ios::trunc);
-
+    vec3 light = {500, 500, 500};
+    Camera camera;
     vector<unique_ptr<Surface>> surfaces;
 
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, 0, 210}, {255, 0, 10}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({50, 70, 250}, {10, 255, 10}, 40)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({-50, 70, 250}, {255, 255, 255}, 20)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({0, -1100, 500}, {0, 0, 255}, 1050)));
-    surfaces.push_back(unique_ptr<Surface>(new Sphere({-50, 0, 250}, {60, 60, 60}, 20)));
+    {
+        int num;
+        float x, y, z, r, g, b, radius;
+        string line;
+        ifstream istream(argv[1]);
 
-    vec3 light = {-50, 250, 100};
+        if(!istream.is_open()) {
+            cout << "input file could not be open" << endl;
 
-    Camera camera;
+            return -1;
+        }
+
+        istream >> num;
+        surfaces.reserve(num);
+        while(!istream.eof()) {
+            istream >> x >> y >> z >> r >> g >> b >> radius;
+            surfaces.emplace_back(new Sphere({x, y, z}, {r, g, b}, radius));
+        }
+    }
 
     output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n" +
               to_string(static_cast<int>(COLOR_MAX)) + "\n";
@@ -48,15 +72,22 @@ int main() {
             IntersectionRecord record = {};
 
             float tBest = ray.findT(FAR_VIEW);
-
+            float tMin = ray.findT(NEAR_VIEW);
+            Surface *closestSurface = nullptr;
+            IntersectionRecord closestRecord = {};
             for (const auto &surface: surfaces) {
-                if (surface->intersect(&record, ray, ray.findT(NEAR_VIEW), tBest)) {
+                if (surface->intersect(&record, ray, tMin, tBest)) {
                     tBest = record.t;
-                    auto rgb = surface->shade(record, {light}, surfaces);
-                    color[0] = COLOR_MAX * rgb.x;
-                    color[1] = COLOR_MAX * rgb.y;
-                    color[2] = COLOR_MAX * rgb.z;
+                    closestRecord = record;
+                    closestSurface = surface.get();
                 }
+            }
+
+            if(closestSurface != nullptr) {
+                auto rgb = closestSurface->shade(closestRecord, {light}, surfaces) * COLOR_MAX;
+                color[0] = rgb.x;
+                color[1] = rgb.y;
+                color[2] = rgb.z;
             }
 
             output += to_string(color[0]) + " " + to_string(color[1]) + " " + to_string(color[2]) + "\n";

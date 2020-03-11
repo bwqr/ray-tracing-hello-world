@@ -3,6 +3,6 @@ project(render_hello_world)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2")
 
-add_executable(render_hello_world main.cpp Camera.cpp Camera.h Surface.h Sphere.cpp Sphere.h Cube.cpp Cube.h Ray.cpp Ray.h vector.h defs.h IntersectionRecord.h)
+add_executable(render_hello_world main.cpp Camera.h Surface.h Sphere.cpp Sphere.h Ray.h vector.h defs.h IntersectionRecord.h)

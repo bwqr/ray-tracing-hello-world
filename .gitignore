@@ -17,3 +17,5 @@ render_hello_world.cbp
 .idea
 
 output
+output.ppm
+input

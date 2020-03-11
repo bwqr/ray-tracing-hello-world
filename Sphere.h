@@ -20,8 +20,8 @@ private:
     float radius;
     vec3 color;
 
-    float ks = 0.4;
-    float kd = 0.6;
+    float ks = 0;
+    float kd = 0.9;
     float ka = AMBIENT_LIGHT;
     float p = 64;
 };

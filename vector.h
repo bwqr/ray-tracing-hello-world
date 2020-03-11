@@ -62,18 +62,10 @@ struct vec3 {
         return {-x, -y, -z};
     }
 
-    vec3(const vec2 &other) {
+    explicit vec3(const vec2 &other) {
         x = other.x;
         y = other.y;
         z = 0;
-    }
-
-    vec3 &operator=(const vec2 &other) {
-        x = other.x;
-        y = other.y;
-        z = 0;
-
-        return *this;
     }
 };
 
