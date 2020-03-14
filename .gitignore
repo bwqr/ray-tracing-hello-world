@@ -13,6 +13,9 @@ _deps
 cmake-build-debug
 render_hello_world
 render_hello_world.cbp
+
+#OS
+.DS_Store
 #IDE
 .idea
 

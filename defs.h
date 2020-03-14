@@ -4,13 +4,13 @@
 
 #define IMAGE_WIDTH 75
 #define IMAGE_HEIGHT 75
-#define IMAGE_RES_X 1248
-#define IMAGE_RES_Y 1248
+#define IMAGE_RES_X 500
+#define IMAGE_RES_Y 500
 #define FAR_VIEW 5000
-#define NEAR_VIEW 0
+#define NEAR_VIEW -1000
 #define AMBIENT_LIGHT .1
-#define ERROR_EPSILON 0.01
+#define ERROR_EPSILON 0.001
 #define COLOR_MAX 255.99
-#define LENGTH_FACTOR 100
+#define LENGTH_FACTOR 75
 
 #endif //RENDER_HELLO_WORLD_DEFS_H

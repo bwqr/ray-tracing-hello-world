@@ -13,9 +13,11 @@ public:
     bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) override;
 
     vec3 shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
-               const std::vector<std::unique_ptr<Surface>> &surfaces) override;
+               const std::vector<std::unique_ptr<Surface>> &surfaces, const int &depth) override;
 
-private:
+    vec3 getColor() override;
+
+protected:
     vec3 center;
     float radius;
     vec3 color;

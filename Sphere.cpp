@@ -56,8 +56,7 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
 }
 
 vec3 Sphere::shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
-                   const std::vector<std::unique_ptr<Surface>> &surfaces) {
-    //Just calculate first lightSource.
+                   const std::vector<std::unique_ptr<Surface>> &surfaces, const int &depth) {
 
     float intensity = ka;
 
@@ -87,16 +86,15 @@ vec3 Sphere::shade(const IntersectionRecord &record, const std::vector<Light> &l
 
         auto distance = light.position.distance(record.hitPoint) / LENGTH_FACTOR;
 
-        auto pointIntensity = light.intensity / (distance * distance);
+        auto pointIntensity = light.intensity; //light.intensity / (distance * distance);
 
         intensity += pointIntensity * (kd * std::max<float>(0, cosTheta) +
                                        ks * std::pow(std::max<float>(0, cosAlpha), p));
     }
-    auto &lightSource = lightSources[0];
+    auto c = color * intensity;
+    return c;
+}
 
-    if (intensity > 1) {
-        int k = 1;
-    }
-
-    return color * intensity;
+vec3 Sphere::getColor() {
+    return color;
 }
