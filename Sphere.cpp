@@ -1,10 +1,14 @@
 
 #include "Sphere.h"
+#include "Light.h"
 
-Sphere::Sphere(vec3 _center, vec3 _color, float _radius) {
+Sphere::Sphere(vec3 _center, vec3 _color, float _radius, float _kd, float _ks, int _p) {
     center = _center;
     radius = _radius;
     color = _color / COLOR_MAX;
+    kd = _kd;
+    ks = _ks;
+    p = _p;
 }
 
 bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) {
@@ -51,31 +55,48 @@ bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &
     return true;
 }
 
-vec3 Sphere::shade(const IntersectionRecord &record, const std::vector<vec3> &lightSources,
+vec3 Sphere::shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                    const std::vector<std::unique_ptr<Surface>> &surfaces) {
     //Just calculate first lightSource.
+
+    float intensity = ka;
+
+    for (const auto &light: lightSources) {
+        Ray lightRay = {record.hitPoint, light.position - record.hitPoint};
+
+        bool shadowed = false;
+
+        IntersectionRecord tmpRecord = {};
+
+        for (const auto &surface: surfaces) {
+            if (surface->intersect(&tmpRecord, lightRay, ERROR_EPSILON, lightRay.findT(light.position.z))) {
+                shadowed = true;
+                break;
+            }
+        }
+
+        if (shadowed) {
+            continue;
+        }
+
+        auto cosTheta = lightRay.direction.cos(record.normal);
+
+        auto bisect = lightRay.direction.bisect(-record.look);
+
+        auto cosAlpha = record.normal.cos(bisect);
+
+        auto distance = light.position.distance(record.hitPoint) / LENGTH_FACTOR;
+
+        auto pointIntensity = light.intensity / (distance * distance);
+
+        intensity += pointIntensity * (kd * std::max<float>(0, cosTheta) +
+                                       ks * std::pow(std::max<float>(0, cosAlpha), p));
+    }
     auto &lightSource = lightSources[0];
 
-    Ray lightRay = {record.hitPoint, lightSource - record.hitPoint};
-
-    bool shadowed = false;
-
-    IntersectionRecord tmpRecord = {};
-
-    for (const auto &surface: surfaces) {
-        if (surface->intersect(&tmpRecord, lightRay, 0.01, lightRay.findT(lightSource.z))) {
-            shadowed = true;
-            break;
-        }
+    if (intensity > 1) {
+        int k = 1;
     }
-
-    auto cosTheta = lightRay.direction.cos(record.normal);
-
-    auto bisect = lightRay.direction.bisect(- record.look);
-
-    auto cosAlpha = record.normal.cos(bisect);
-
-    auto intensity = shadowed ? ka : ka + kd*std::max<float>(0, cosTheta) + ks*std::pow(std::max<float>(0, cosAlpha), p);
 
     return color * intensity;
 }

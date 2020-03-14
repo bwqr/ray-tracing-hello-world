@@ -7,20 +7,23 @@
 #include "Surface.h"
 #include "Sphere.h"
 #include "defs.h"
+#include "Triangle.h"
 
 using namespace std;
 
+int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vector<Light> *lights);
+
 int main(int argc, char **argv) {
 
-    if(argc < 2) {
-        cout << "input file is not given" << endl;
+    if (argc < 3) {
+        cout << "input and output file is not given" << endl;
 
         return -1;
     }
 
-    ofstream stream("output.ppm", ios::binary | ios::trunc);
+    ofstream stream(argv[2], ios::binary | ios::trunc);
 
-    if(!stream.is_open()) {
+    if (!stream.is_open()) {
         cout << "output file could not be open" << endl;
 
         return -1;
@@ -31,28 +34,14 @@ int main(int argc, char **argv) {
     string output;
     output.reserve(size);
 
-    vec3 light = {500, 500, 500};
     Camera camera;
     vector<unique_ptr<Surface>> surfaces;
+    vector<Light> lights;
 
-    {
-        int num;
-        float x, y, z, r, g, b, radius;
-        string line;
-        ifstream istream(argv[1]);
+    if (read_file(argv[1], &surfaces, &lights) == -1) {
+        cout << "input file could not be open" << endl;
 
-        if(!istream.is_open()) {
-            cout << "input file could not be open" << endl;
-
-            return -1;
-        }
-
-        istream >> num;
-        surfaces.reserve(num);
-        while(!istream.eof()) {
-            istream >> x >> y >> z >> r >> g >> b >> radius;
-            surfaces.emplace_back(new Sphere({x, y, z}, {r, g, b}, radius));
-        }
+        return -1;
     }
 
     output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n" +
@@ -83,8 +72,8 @@ int main(int argc, char **argv) {
                 }
             }
 
-            if(closestSurface != nullptr) {
-                auto rgb = closestSurface->shade(closestRecord, {light}, surfaces) * COLOR_MAX;
+            if (closestSurface != nullptr) {
+                auto rgb = closestSurface->shade(closestRecord, lights, surfaces) * COLOR_MAX;
                 color[0] = rgb.x;
                 color[1] = rgb.y;
                 color[2] = rgb.z;
@@ -97,6 +86,53 @@ int main(int argc, char **argv) {
     stream.write(output.c_str(), output.size());
 
     stream.close();
+
+    return 0;
+}
+
+int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vector<Light> *lights) {
+    int numObj, numLight, p;
+    char type;
+    float x, y, z, r, g, b, ks, kd, radius, intensity;
+    string line;
+    ifstream istream(path);
+
+    if (!istream.is_open()) {
+        return -1;
+    }
+
+    istream >> numObj >> numLight;
+
+    surfaces->reserve(numObj);
+    lights->reserve(numLight);
+
+    for (size_t i = 0; i < numObj; i++) {
+        istream >> type;
+        if (type == 's') {
+            istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> ks >> p;
+            surfaces->emplace_back(new Sphere({x, y, z}, {r, g, b}, radius, kd, ks, p));
+        } else if (type == 't') {
+            std::array<vec3, 3> points;
+
+            for (size_t j = 0; j < 3; j++) {
+                istream >> x >> y >> z;
+                points[j] = {x, y, z};
+            }
+
+            istream >> r >> g >> b;
+
+            surfaces->emplace_back(new Triangle(points, {r, g, b}));
+        } else {
+            string s;
+            getline(istream, s);
+        }
+
+    }
+
+    for (size_t i = 0; i < numLight; i++) {
+        istream >> x >> y >> z >> intensity;
+        lights->emplace_back(Light({x, y, z}, intensity));
+    }
 
     return 0;
 }

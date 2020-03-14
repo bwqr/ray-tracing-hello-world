@@ -8,11 +8,11 @@
 
 class Sphere : public Surface {
 public:
-    Sphere(vec3 _center, vec3 _color, float _radius);
+    Sphere(vec3 _center, vec3 _color, float _radius, float _kd, float _ks, int _p);
 
     bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) override;
 
-    vec3 shade(const IntersectionRecord &record, const std::vector<vec3> &lightSources,
+    vec3 shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                const std::vector<std::unique_ptr<Surface>> &surfaces) override;
 
 private:
@@ -20,10 +20,10 @@ private:
     float radius;
     vec3 color;
 
-    float ks = 0;
-    float kd = 0.9;
+    float ks;
+    float kd;
     float ka = AMBIENT_LIGHT;
-    float p = 64;
+    int p;
 };
 
 
