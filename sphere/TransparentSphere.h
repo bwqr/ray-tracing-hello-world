@@ -6,19 +6,17 @@
 #define RENDER_HELLO_WORLD_TRANSPARENTSPHERE_H
 
 
-#include "Sphere.h"
+#include "GlazedSphere.h"
+#include "../surface/TransparentSurface.h"
 
-class TransparentSphere : public Sphere {
+class TransparentSphere : protected Sphere, public TransparentSurface {
 public:
-    TransparentSphere(vec3 _center, vec3 _color, float _radius, float _kd, float _km, float _kt, float _nd);
+    TransparentSphere(vec3 _center, float _radius, vec3 _color, float _kd, float _km, float _kt, float _nd);
+
+    bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) override;
 
     vec3 shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                const std::vector<std::unique_ptr<Surface> > &surfaces, const int &depth) override;
-
-private:
-    float km;
-    float kt;
-    float nd;
 };
 
 

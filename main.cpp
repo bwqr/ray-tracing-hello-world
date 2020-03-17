@@ -6,12 +6,13 @@
 #include <array>
 #include "vector.h"
 #include "Camera.h"
-#include "Surface.h"
-#include "Sphere.h"
+#include "surface/Surface.h"
+#include "sphere/Sphere.h"
 #include "defs.h"
 #include "Triangle.h"
-#include "GlazedSphere.h"
-#include "TransparentSphere.h"
+#include "sphere/GlazedSphere.h"
+#include "sphere/TransparentSphere.h"
+#include "sphere/DiffusedSphere.h"
 
 using namespace std;
 
@@ -51,6 +52,9 @@ int main(int argc, char **argv) {
     output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n" +
               to_string(static_cast<int>(COLOR_MAX)) + "\n";
 
+    auto *image = new int16_t[IMAGE_RES_Y * IMAGE_RES_Y * 3];
+
+//#pragma omp parallel for default(none) shared(camera, surfaces, image, lights)
     for (int i = IMAGE_RES_Y - 1; i >= 0; i--) {
         float normY = (i + 0.5) / IMAGE_RES_Y;
 
@@ -58,32 +62,34 @@ int main(int argc, char **argv) {
 
             float normX = (j + 0.5) / IMAGE_RES_X;
 
-            int color[3] = {0, 0, 0};
+//            int color[3] = {0, 0, 0};
+            image[i * IMAGE_RES_X * 3 + j * 3] = 0;
+            image[i * IMAGE_RES_X * 3 + j * 3 + 1] = 0;
+            image[i * IMAGE_RES_X * 3 + j * 3 + 2] = 0;
 
             auto ray = camera.generateRay({normX, normY});
 
-            IntersectionRecord record = {};
-
-            float tBest = ray.findT(FAR_VIEW);
-            float tMin = ray.findT(NEAR_VIEW);
-            Surface *closestSurface = nullptr;
             IntersectionRecord closestRecord = {};
-            for (const auto &surface: surfaces) {
-                if (surface->intersect(&record, ray, tMin, tBest)) {
-                    tBest = record.t;
-                    closestRecord = record;
-                    closestSurface = surface.get();
-                }
-            }
-
+            Surface *closestSurface = Surface::findClosestIntersectedSurface(&closestRecord, surfaces, ray,
+                                                                             ray.findT(NEAR_VIEW),
+                                                                             ray.findT(FAR_VIEW));
             if (closestSurface != nullptr) {
                 auto rgb = closestSurface->shade(closestRecord, lights, surfaces, 3) * COLOR_MAX;
-                color[0] = rgb.x;
-                color[1] = rgb.y;
-                color[2] = rgb.z;
+                image[i * IMAGE_RES_X * 3 + j * 3] = rgb.x;
+                image[i * IMAGE_RES_X * 3 + j * 3 + 1] = rgb.y;
+                image[i * IMAGE_RES_X * 3 + j * 3 + 2] = rgb.z;
             }
 
-            output += to_string(color[0]) + " " + to_string(color[1]) + " " + to_string(color[2]) + "\n";
+//            output += to_string(color[0]) + " " + to_string(color[1]) + " " + to_string(color[2]) + "\n";
+        }
+    }
+
+    for (int i = IMAGE_RES_Y - 1; i >= 0; i--) {
+        for (int j = 0; j < IMAGE_RES_X; ++j) {
+            output += to_string(image[i * IMAGE_RES_X * 3 + j * 3]) + " " +
+                      to_string(image[i * IMAGE_RES_X * 3 + j * 3 + 1]) + " " +
+                      to_string(image[i * IMAGE_RES_X * 3 + j * 3 + 2]) +
+                      "\n";
         }
     }
 
@@ -91,6 +97,7 @@ int main(int argc, char **argv) {
 
     stream.close();
 
+    delete[] image;
     return 0;
 }
 
@@ -111,7 +118,9 @@ int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vecto
         istream >> type;
         if (type == "sphere") {
             istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> ks >> p;
-            surfaces->emplace_back(new Sphere({x, y, z}, {r, g, b}, radius, kd, ks, p));
+            vec3 color = {r, g, b};
+
+            surfaces->emplace_back(new DiffusedSphere({x, y, z}, radius, color / COLOR_MAX, kd, ks, p));
         } else if (type == "triangle") {
             std::array<vec3, 3> points = {};
 
@@ -121,17 +130,21 @@ int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vecto
             }
 
             istream >> r >> g >> b >> kd >> km;
+            vec3 color = {r, g, b};
 
-            surfaces->emplace_back(new Triangle(points, {r, g, b}, kd, km));
+            surfaces->emplace_back(new Triangle(points, color / COLOR_MAX, kd, km));
         } else if (type == "light") {
             istream >> x >> y >> z >> intensity;
             lights->emplace_back(Light({x, y, z}, intensity));
         } else if (type == "glazedsphere") {
             istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> km;
-            surfaces->emplace_back(new GlazedSphere({x, y, z}, {r, g, b}, radius, kd, km));
+            vec3 color = {r, g, b};
+
+            surfaces->emplace_back(new GlazedSphere({x, y, z}, radius, color / COLOR_MAX, kd, km));
         } else if (type == "transsphere") {
             istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> km >> kt >> nd;
-            surfaces->emplace_back(new TransparentSphere({x, y, z}, {r, g, b}, radius, kd, km, kt, nd));
+            vec3 color = {r, g, b};
+            surfaces->emplace_back(new TransparentSphere({x, y, z}, radius, color / COLOR_MAX, kd, km, kt, nd));
         } else {
             istream.ignore(INT32_MAX, '\n');
         }

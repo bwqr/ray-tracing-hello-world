@@ -4,12 +4,12 @@
 
 #define IMAGE_WIDTH 50
 #define IMAGE_HEIGHT 50
-#define IMAGE_RES_X 750
-#define IMAGE_RES_Y 750
+#define IMAGE_RES_X 1024
+#define IMAGE_RES_Y 1024
 #define FAR_VIEW 3000
 #define NEAR_VIEW 80
 #define AMBIENT_LIGHT .1
-#define ERROR_EPSILON 0.001
+#define ERROR_EPSILON 0.01
 #define COLOR_MAX 255.99
 #define LENGTH_FACTOR 100
 #define BACKGROUND 200, 100, 150
