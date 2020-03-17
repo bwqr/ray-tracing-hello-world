@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <fstream>
+#include <string>
 #include <array>
 #include "vector.h"
 #include "Camera.h"
@@ -10,6 +11,7 @@
 #include "defs.h"
 #include "Triangle.h"
 #include "GlazedSphere.h"
+#include "TransparentSphere.h"
 
 using namespace std;
 
@@ -49,7 +51,7 @@ int main(int argc, char **argv) {
     output += "P3\n" + to_string(IMAGE_RES_X) + " " + to_string(IMAGE_RES_Y) + "\n" +
               to_string(static_cast<int>(COLOR_MAX)) + "\n";
 
-    for (int i = 0; i < IMAGE_RES_Y; i++) {
+    for (int i = IMAGE_RES_Y - 1; i >= 0; i--) {
         float normY = (i + 0.5) / IMAGE_RES_Y;
 
         for (int j = 0; j < IMAGE_RES_X; j++) {
@@ -75,7 +77,7 @@ int main(int argc, char **argv) {
             }
 
             if (closestSurface != nullptr) {
-                auto rgb = closestSurface->shade(closestRecord, lights, surfaces, 1) * COLOR_MAX;
+                auto rgb = closestSurface->shade(closestRecord, lights, surfaces, 3) * COLOR_MAX;
                 color[0] = rgb.x;
                 color[1] = rgb.y;
                 color[2] = rgb.z;
@@ -94,8 +96,8 @@ int main(int argc, char **argv) {
 
 int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vector<Light> *lights) {
     string type;
-    int p;
-    float x, y, z, r, g, b, ks, kd, radius, intensity, km;
+    int p, numObject;
+    float x, y, z, r, g, b, ks, kd, radius, intensity, km, kt, nd;
     string line;
     ifstream istream(path);
 
@@ -103,13 +105,15 @@ int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vecto
         return -1;
     }
 
+    istream >> numObject;
+
     while (!istream.eof()) {
         istream >> type;
-        if (type == "s") {
+        if (type == "sphere") {
             istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> ks >> p;
             surfaces->emplace_back(new Sphere({x, y, z}, {r, g, b}, radius, kd, ks, p));
-        } else if (type == "t") {
-            std::array<vec3, 3> points;
+        } else if (type == "triangle") {
+            std::array<vec3, 3> points = {};
 
             for (size_t j = 0; j < 3; j++) {
                 istream >> x >> y >> z;
@@ -119,15 +123,17 @@ int read_file(char *path, std::vector<unique_ptr<Surface>> *surfaces, std::vecto
             istream >> r >> g >> b >> kd >> km;
 
             surfaces->emplace_back(new Triangle(points, {r, g, b}, kd, km));
-        } else if (type == "l") {
+        } else if (type == "light") {
             istream >> x >> y >> z >> intensity;
             lights->emplace_back(Light({x, y, z}, intensity));
-        } else if (type == "gs") {
+        } else if (type == "glazedsphere") {
             istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> km;
             surfaces->emplace_back(new GlazedSphere({x, y, z}, {r, g, b}, radius, kd, km));
+        } else if (type == "transsphere") {
+            istream >> x >> y >> z >> r >> g >> b >> radius >> kd >> km >> kt >> nd;
+            surfaces->emplace_back(new TransparentSphere({x, y, z}, {r, g, b}, radius, kd, km, kt, nd));
         } else {
-            string s;
-            getline(istream, s);
+            istream.ignore(INT32_MAX, '\n');
         }
     }
 

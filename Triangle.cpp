@@ -83,7 +83,11 @@ vec3 Triangle::shade(const IntersectionRecord &record, const std::vector<Light> 
 
         auto cosTheta = lightRay.direction.cos(record.normal);
 
-        intensity += light.intensity * kd * std::max<float>(0, cosTheta);
+        auto distance = light.position.distance(record.hitPoint) / LENGTH_FACTOR;
+
+        auto pointIntensity = light.intensity;//light.intensity / (distance * distance);
+
+        intensity += pointIntensity * kd * std::max<float>(0, cosTheta);
     }
 
     if (depth == 0) {

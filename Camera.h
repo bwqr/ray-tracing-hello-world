@@ -8,13 +8,15 @@
 class Camera {
 public:
     Ray generateRay(const vec2 &pointInViewPanel) {
-        static float imageWidth = IMAGE_WIDTH * 2.;
-        static float imageHeight = IMAGE_HEIGHT * 2.;
-
+        static float xDifference = viewPanel[1].x - viewPanel[0].x;
+        static float yDifference = viewPanel[1].y - viewPanel[0].y;
+        static float zDifference = viewPanel[1].z - viewPanel[0].z;
+        static float xzRatio = zDifference / xDifference;
+        static float yzRatio = zDifference / yDifference;
         vec3 pointInWorldSpace = {
-                pointInViewPanel.x * imageWidth - IMAGE_WIDTH,
-                IMAGE_HEIGHT - pointInViewPanel.y * imageHeight,
-                100
+                viewPanel[0].x + xDifference * pointInViewPanel.x,
+                viewPanel[0].y + yDifference * pointInViewPanel.y,
+                viewPanel[0].z + zDifference * pointInViewPanel.y
         };
 
         vec3 direction = (pointInWorldSpace - position);
@@ -23,7 +25,9 @@ public:
     }
 
 private:
-    vec3 position = {0, 0, 0};
+    //Two points and x axis in 3d space forms a plane.
+    std::array<vec3, 3> viewPanel = {{{-IMAGE_WIDTH, -IMAGE_HEIGHT, 98}, {IMAGE_WIDTH, IMAGE_HEIGHT, 102}}};
+    vec3 position = {0, 15, -300};
 };
 
 

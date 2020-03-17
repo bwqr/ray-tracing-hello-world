@@ -4,7 +4,8 @@
 
 #include "GlazedSphere.h"
 
-GlazedSphere::GlazedSphere(vec3 _center, vec3 _color, float _radius, float _kd, float _km) : Sphere(_center, _color, _radius, _kd, 0, 0){
+GlazedSphere::GlazedSphere(vec3 _center, vec3 _color, float _radius, float _kd, float _km) : Sphere(_center, _color,
+                                                                                                    _radius, _kd, 0, 0){
     km = _km;
 }
 
@@ -32,7 +33,7 @@ vec3 GlazedSphere::shade(const IntersectionRecord &record, const std::vector<Lig
 
         auto cosTheta = lightRay.direction.cos(record.normal);
 
-//        auto distance = light.position.distance(record.hitPoint) / LENGTH_FACTOR;
+        auto distance = light.position.distance(record.hitPoint) / LENGTH_FACTOR;
 
         auto pointIntensity = light.intensity; //light.intensity / (distance * distance);
 
@@ -49,7 +50,7 @@ vec3 GlazedSphere::shade(const IntersectionRecord &record, const std::vector<Lig
 
     auto norm = record.normal.unit();
 
-    Ray reflectionRay = {record.hitPoint, record.look - norm * 2 * (norm.dot( record.look))};
+    Ray reflectionRay = {record.hitPoint, record.look.reflect(norm)};
 
     auto tBest = std::max<float>(reflectionRay.findT(FAR_VIEW), reflectionRay.findT(NEAR_VIEW));
 
