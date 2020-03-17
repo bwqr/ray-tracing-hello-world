@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/17/20.
-//
-
 #include "DiffusedSurface.h"
 
 DiffusedSurface::DiffusedSurface(const vec3 _color, const float _kd, const float _ks, const int _p) {

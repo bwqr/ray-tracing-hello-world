@@ -1,7 +1,3 @@
-//
-// Created by fmk on 14.03.2020.
-//
-
 #ifndef RENDER_HELLO_WORLD_GLAZEDSPHERE_H
 #define RENDER_HELLO_WORLD_GLAZEDSPHERE_H
 

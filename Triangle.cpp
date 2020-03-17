@@ -1,11 +1,7 @@
-//
-// Created by fmk on 3/13/20.
-//
-
 #include "Triangle.h"
 
 Triangle::Triangle(const std::array<vec3, 3> &_points, const vec3 &_color, float _kd, float _km)
-        : GlazedSurface(_color, _kd, _km) {
+        : DiffusedSurface(_color, _kd, .4, 64) {
     a = _points[0];
     b = _points[1];
     c = _points[2];

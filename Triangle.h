@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/13/20.
-//
-
 #ifndef RENDER_HELLO_WORLD_TRIANGLE_H
 #define RENDER_HELLO_WORLD_TRIANGLE_H
 
@@ -10,7 +6,7 @@
 #include "defs.h"
 #include "surface/GlazedSurface.h"
 
-class Triangle : public GlazedSurface {
+class Triangle : public DiffusedSurface {
 public:
     Triangle(const std::array<vec3, 3> &_points, const vec3 &_color, float _kd, float _km);
 

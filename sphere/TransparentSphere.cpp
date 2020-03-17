@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/16/20.
-//
-
 #include "TransparentSphere.h"
 
 TransparentSphere::TransparentSphere(vec3 _center, float _radius, vec3 _color, float _kd, float _km, float _kt,

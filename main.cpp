@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
     auto *image = new int16_t[IMAGE_RES_Y * IMAGE_RES_Y * 3];
 
-//#pragma omp parallel for default(none) shared(camera, surfaces, image, lights)
+#pragma omp parallel for default(none) shared(camera, surfaces, image, lights)
     for (int i = IMAGE_RES_Y - 1; i >= 0; i--) {
         float normY = (i + 0.5) / IMAGE_RES_Y;
 

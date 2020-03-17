@@ -4,8 +4,8 @@
 
 #define IMAGE_WIDTH 50
 #define IMAGE_HEIGHT 50
-#define IMAGE_RES_X 1024
-#define IMAGE_RES_Y 1024
+#define IMAGE_RES_X 2048
+#define IMAGE_RES_Y 2048
 #define FAR_VIEW 3000
 #define NEAR_VIEW 80
 #define AMBIENT_LIGHT .1

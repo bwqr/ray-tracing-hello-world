@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/17/20.
-//
-
 #include "TransparentSurface.h"
 
 TransparentSurface::TransparentSurface(const vec3 _color, const float _kd, const float _km, const float _kt,

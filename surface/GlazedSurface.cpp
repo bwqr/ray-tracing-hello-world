@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/17/20.
-//
-
 #include "GlazedSurface.h"
 
 GlazedSurface::GlazedSurface(const vec3 _color, const float _kd, const float _km) : DiffusedSurface(_color, _kd, 0, 0) {

@@ -1,7 +1,3 @@
-//
-// Created by fmk on 3/13/20.
-//
-
 #ifndef RENDER_HELLO_WORLD_LIGHT_H
 #define RENDER_HELLO_WORLD_LIGHT_H
 

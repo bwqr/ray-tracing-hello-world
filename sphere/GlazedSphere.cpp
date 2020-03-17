@@ -1,7 +1,3 @@
-//
-// Created by fmk on 14.03.2020.
-//
-
 #include "GlazedSphere.h"
 
 GlazedSphere::GlazedSphere(vec3 _center, float _radius, vec3 _color, float _kd, float _km)
