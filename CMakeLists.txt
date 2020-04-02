@@ -3,8 +3,10 @@ project(render_hello_world)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -O2 -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -fopenmp")
 
-add_executable(render_hello_world main.cpp Camera.h surface/Surface.h sphere/Sphere.cpp sphere/Sphere.h vector.h Ray.h defs.h IntersectionRecord.h Light.h Triangle.cpp Triangle.h sphere/GlazedSphere.cpp sphere/GlazedSphere.h sphere/TransparentSphere.cpp sphere/TransparentSphere.h surface/TransparentSurface.cpp surface/TransparentSurface.h surface/GlazedSurface.cpp surface/GlazedSurface.h surface/DiffusedSurface.cpp surface/DiffusedSurface.h sphere/DiffusedSphere.h sphere/DiffusedSphere.cpp)
+file(GLOB BASE_SRC "Camera.h" "defs.h" "IntersectionRecord.h" "Light.h" "Ray.h" "vector.h" "shapes/sphere/*.h" "shapes/sphere/*.cpp" "shapes/sphere/*.h" "shapes/triangle/*.cpp" "surfaces/*.h" "surfaces/*.cpp")
 
-add_executable(test test.cpp Camera.h surface/Surface.h sphere/Sphere.cpp sphere/Sphere.h vector.h Ray.h defs.h IntersectionRecord.h Light.h Triangle.cpp Triangle.h sphere/GlazedSphere.cpp sphere/GlazedSphere.h sphere/TransparentSphere.cpp sphere/TransparentSphere.h)
+add_executable(render_hello_world main.cpp ${BASE_SRC})
+
+add_executable(test_render test/test.cpp ${BASE_SRC})

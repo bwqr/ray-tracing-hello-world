@@ -1,10 +1,7 @@
 
 #include "Sphere.h"
 
-Sphere::Sphere(vec3 _center, float _radius) {
-    center = _center;
-    radius = _radius;
-}
+Sphere::Sphere(vec3 _center, float _radius) : center(_center), radius(_radius) {}
 
 bool Sphere::intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) {
     //Move ray into sphere space.

@@ -1,8 +1,7 @@
 #include "GlazedSurface.h"
 
-GlazedSurface::GlazedSurface(const vec3 _color, const float _kd, const float _km) : DiffusedSurface(_color, _kd, 0, 0) {
-    km = _km;
-}
+GlazedSurface::GlazedSurface(const vec3 _color, const float _km) :
+        DiffusedSurface(_color, 1, 0, 0), km(_km) {}
 
 vec3 GlazedSurface::shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                           const std::vector<std::unique_ptr<Surface> > &surfaces, const int &depth) {
@@ -30,5 +29,5 @@ vec3 GlazedSurface::shadeReflection(const IntersectionRecord &record, const std:
         reflectionColor = reflectionColor + closestSurface->shade(closestRecord, lightSources, surfaces, depth - 1);
     }
 
-    return diffusedColor + reflectionColor * km;
+    return diffusedColor * (1 - km) + reflectionColor * km;
 }

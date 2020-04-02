@@ -6,13 +6,13 @@
 
 class GlazedSurface : public DiffusedSurface {
 public:
-    GlazedSurface(const vec3 _color, const float _kd, const float _km);
+    GlazedSurface(const vec3 _color, const float _km);
 
     vec3 shade(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                const std::vector<std::unique_ptr<Surface> > &surfaces, const int &depth) override;
 
 protected:
-    float km;
+    const float km;
 
     vec3 shadeReflection(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                          const std::vector<std::unique_ptr<Surface>> &surfaces, const int depth);

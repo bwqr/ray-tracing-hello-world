@@ -1,11 +1,6 @@
 #include "Triangle.h"
 
-Triangle::Triangle(const std::array<vec3, 3> &_points, const vec3 &_color, float _kd, float _km)
-        : DiffusedSurface(_color, _kd, .4, 64) {
-    a = _points[0];
-    b = _points[1];
-    c = _points[2];
-}
+Triangle::Triangle(const std::array<vec3, 3> &_points) : a(_points[0]), b(_points[1]), c(_points[2]) {}
 
 bool Triangle::intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) {
     vec3 ab = b - a;
@@ -17,6 +12,7 @@ bool Triangle::intersect(IntersectionRecord *record, const Ray &ray, const float
 //        return false;
 //    }
 
+    //BUG: check if this is correct
     //Check if ray and plane is parallel
     if (normal.dot(ray.direction) < ERROR_EPSILON) {
         return false;

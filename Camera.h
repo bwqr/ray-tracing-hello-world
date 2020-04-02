@@ -26,8 +26,8 @@ public:
 
 private:
     //Two points and x axis in 3d space forms a plane.
-    std::array<vec3, 3> viewPanel = {{{-IMAGE_WIDTH, -IMAGE_HEIGHT, 98}, {IMAGE_WIDTH, IMAGE_HEIGHT, 102}}};
-    vec3 position = {0, 15, -300};
+    std::array<vec3, 3> viewPanel = {{{-IMAGE_WIDTH, -IMAGE_HEIGHT, 100}, {IMAGE_WIDTH, IMAGE_HEIGHT, 100}}};
+    vec3 position = {0, 0, -300};
 };
 
 

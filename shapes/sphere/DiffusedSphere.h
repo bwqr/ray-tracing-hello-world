@@ -1,7 +1,7 @@
 #ifndef RENDER_HELLO_WORLD_DIFFUSEDSPHERE_H
 #define RENDER_HELLO_WORLD_DIFFUSEDSPHERE_H
 
-#include "../surface/DiffusedSurface.h"
+#include "../../surfaces/DiffusedSurface.h"
 #include "Sphere.h"
 
 class DiffusedSphere : public Sphere, public DiffusedSurface {

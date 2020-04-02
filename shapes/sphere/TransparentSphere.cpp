@@ -1,8 +1,8 @@
 #include "TransparentSphere.h"
 
-TransparentSphere::TransparentSphere(vec3 _center, float _radius, vec3 _color, float _kd, float _km, float _kt,
+TransparentSphere::TransparentSphere(vec3 _center, float _radius, vec3 _color, float _km, float _kt,
                                      float _nd)
-        : Sphere(_center, _radius), TransparentSurface(_color, _kd, _km, _kt, _nd) {}
+        : Sphere(_center, _radius), TransparentSurface(_color, 1, _km, _kt, _nd) {}
 
 bool TransparentSphere::intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) {
     return Sphere::intersect(record, ray, tMin, tMax);

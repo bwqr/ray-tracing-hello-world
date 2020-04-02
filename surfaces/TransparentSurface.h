@@ -9,8 +9,8 @@ public:
     TransparentSurface(const vec3 _color, const float _kd, const float _km, const float _kt, const float _nd);
 
 protected:
-    float kt;
-    float nd;
+    const float kt;
+    const float nd;
 
     vec3 shadeRefraction(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                     const std::vector<std::unique_ptr<Surface>> &surfaces, const int depth, const bool inOut);

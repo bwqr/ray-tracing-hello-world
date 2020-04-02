@@ -3,11 +3,11 @@
 
 
 #include "GlazedSphere.h"
-#include "../surface/TransparentSurface.h"
+#include "../../surfaces/TransparentSurface.h"
 
 class TransparentSphere : protected Sphere, public TransparentSurface {
 public:
-    TransparentSphere(vec3 _center, float _radius, vec3 _color, float _kd, float _km, float _kt, float _nd);
+    TransparentSphere(vec3 _center, float _radius, vec3 _color, float _km, float _kt, float _nd);
 
     bool intersect(IntersectionRecord *record, const Ray &ray, const float &tMin, const float &tMax) override;
 

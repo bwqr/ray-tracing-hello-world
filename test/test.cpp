@@ -1,5 +1,5 @@
 #include <iostream>
-#include "vector.h"
+#include "../vector.h"
 
 int main() {
     vec3 a = {static_cast<float>(1. / std::sqrt(2)), - static_cast<float>(1. / std::sqrt(2)), 0};

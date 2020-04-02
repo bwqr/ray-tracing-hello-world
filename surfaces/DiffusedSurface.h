@@ -13,11 +13,11 @@ public:
                const std::vector<std::unique_ptr<Surface> > &surfaces, const int &depth) override;
 
 protected:
-    vec3 color{};
-    float ka = AMBIENT_LIGHT;
-    float kd;
-    float ks;
-    int p;
+    const vec3 color{};
+    const float ka = AMBIENT_LIGHT;
+    const float kd;
+    const float ks;
+    const int p;
 
     vec3 shadeDiffusion(const IntersectionRecord &record, const std::vector<Light> &lightSources,
                         const std::vector<std::unique_ptr<Surface>> &surfaces);
